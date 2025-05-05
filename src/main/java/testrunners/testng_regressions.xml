@@ -23,7 +23,7 @@
     </classes>
   </test> 
    <test  name="Open Cart Home Page Test_chromium">
-   <parameter name="browser" value="chromium"/>
+   <parameter name="browser" value="chrome"/>
     <classes>
       <class name="com.qa.opencart.tests.HomePageTest"/>
       
