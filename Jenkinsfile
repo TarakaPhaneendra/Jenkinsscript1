@@ -14,17 +14,16 @@ pipeline {
 
         stage('Build & Test') {
             steps {
-                // Run tests but continue even if some tests fail
-               bat "mvn clean package"
-
+                // Run Maven commands
+                bat "\"${tool 'MAVEN_HOME'}/bin/mvn\" clean package"
             }
         }
-    
+    }
 
     post {
         always {
             // Publish test results even if some tests failed
-			 junit '**/target/surefire-reports/*.xml'
+            junit '**/target/surefire-reports/*.xml'
             // Archive built JAR (if created)
             archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
         }
