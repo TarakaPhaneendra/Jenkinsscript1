@@ -15,7 +15,8 @@ pipeline {
         stage('Build & Test') {
             steps {
                 // Run tests but continue even if some tests fail
-                bat "mvn clean package -Dmaven.test.failure.ignore=true"
+               bat "mvn clean package"
+
             }
         }
     }
