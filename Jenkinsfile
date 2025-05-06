@@ -2,28 +2,28 @@ pipeline {
     agent any
 
     tools {
-        maven "MAVEN_HOME"  // Ensure this name matches the one configured in Jenkins global tools
+        maven "MAVEN_HOME"  // This name must match what's set in Jenkins > Global Tool Configuration
     }
 
     stages {
         stage('Checkout') {
             steps {
                 git branch: 'naveenscript', url: 'https://github.com/TarakaPhaneendra/Jenkinsscript1.git'
-               
             }
-
-            
-     stage('Results') {
-    steps {
-        junit '**/target/surefire-reports/TEST-*.xml'
-        archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-    }
-}
-
         }
 
-       
-    }
+        stage('Build & Test') {
+            steps {
+                bat 'mvn clean test'
+            }
+        }
 
-   
+        stage('Results') {
+            steps {
+                junit '**/target/surefire-reports/TEST-*.xml'
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+            }
+        }
+    }
 }
+
