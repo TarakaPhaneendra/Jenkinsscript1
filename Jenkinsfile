@@ -2,48 +2,32 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'MAVEN_HOME'  // Make sure 'MAVEN_HOME' is configured in Jenkins global tools
-    }
-
     stages {
         stage('Build') {
             steps {
-                git branch: 'naveenjenkinsscript', url: 'https://github.com/TarakaPhaneendra/Jenkinsscript1.git'
-                bat "mvn clean install"
-            }
-            post {
-                success {
-                    junit '**/target/surefire-reports/TEST-*.xml'
-                    archiveArtifacts 'target/*.jar'
-                }
+                echo 'Build App'
             }
         }
-
-        stage("Deploy to QA") {
+		 stage('Test') {
             steps {
-                echo "Deploying to QA environment..."
+                echo 'Test App'
             }
         }
-
-        stage('Regression Automation Test') {
+		 stage('Deploy') {
             steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    git branch: 'naveenjenkinsscript', url: 'https://github.com/TarakaPhaneendra/Jenkinsscript1.git'
-                    bat "mvn clean test -Dsurefire.suiteXmlFiles=src/test/java/testrunners/testng_regressions.xml"
-                }
-            }
-        }
-
-        stage('Publish Extent Report') {
-            steps {
-                publishHTML([allowMissing: false,
-                             alwaysLinkToLastBuild: false,
-                             keepAll: true,
-                             reportDir: 'build',
-                             reportFiles: 'TestExecutionReport.html',
-                             reportName: 'HTML Extent Report'])
+                echo 'Deploy App'
             }
         }
     }
+	post{
+	 failure{
+	 
+	 emailext body: 'Summary', subject: 'Pipeline Status', to: '1234taraka@gmail.com'
+	 
+	 }
+	
+	
+	
+	
+	}
 }
