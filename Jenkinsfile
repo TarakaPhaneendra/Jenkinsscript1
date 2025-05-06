@@ -1,33 +1,49 @@
-
 pipeline {
     agent any
+
+    tools {
+        maven 'maven'
+    }
 
     stages {
         stage('Build') {
             steps {
-                echo 'Build App'
+                git branch: 'naveenjenkinsscript', url: 'https://github.com/TarakaPhaneendra/Jenkinsscript1.git'
+                bat "mvn -Dmaven.test.failure.ignore=true clean package"
+            }
+            post {
+                success {
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                    archiveArtifacts 'target/*.jar'
+                }
             }
         }
-		 stage('Test') {
+
+        stage("Deploy to QA") {
             steps {
-                echo 'Test App'
+                echo "deploy to qa"
             }
         }
-		 stage('Deploy') {
+
+        stage('Regression Automation Test') {
             steps {
-                echo 'Deploy App'
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                   git branch: 'naveenjenkinsscript', url: 'https://github.com/TarakaPhaneendra/Jenkinsscript1.git'
+                    bat "mvn clean test -Dsurefire.suiteXmlFiles=src/test/java/testrunners/testng_regressions.xml"
+                }
+            }
+        }
+
+        stage('Publish Extent Report') {
+            steps {
+                publishHTML([allowMissing: false,
+                             alwaysLinkToLastBuild: false,
+                             keepAll: true,
+                             reportDir: 'build',
+                             reportFiles: 'TestExecutionReport.html',
+                             reportName: 'HTML Extent Report',
+                             reportTitles: ''])
             }
         }
     }
-	post{
-	 failure{
-	 
-	 emailext body: 'Summary', subject: 'Pipeline Status', to: '1234taraka@gmail.com'
-	 
-	 }
-	
-	
-	
-	
-	}
 }
