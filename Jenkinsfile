@@ -9,6 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'naveenscript', url: 'https://github.com/TarakaPhaneendra/Jenkinsscript1.git'
+                bat "mvn -Dmaven.test.failure.ignore=true clean package"
             }
         }
 
