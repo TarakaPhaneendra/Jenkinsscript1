@@ -15,12 +15,5 @@ pipeline {
        
     }
 
-    post {
-        always {
-            // Publish test results even if some tests failed
-            junit '**/target/surefire-reports/*.xml'
-            // Archive built JAR (if created)
-            archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-        }
-    }
+   
 }
