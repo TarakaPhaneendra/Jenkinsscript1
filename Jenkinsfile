@@ -1,15 +1,16 @@
+
 pipeline {
     agent any
 
     tools {
-         maven 'MAVEN_HOME'
+        maven 'MAVEN_HOME'  // Make sure 'MAVEN_HOME' is configured in Jenkins global tools
     }
 
     stages {
         stage('Build') {
             steps {
                 git branch: 'naveenjenkinsscript', url: 'https://github.com/TarakaPhaneendra/Jenkinsscript1.git'
-                bat "mvn -Dmaven.test.failure.ignore=true clean package"
+                bat "mvn clean install"
             }
             post {
                 success {
@@ -21,14 +22,14 @@ pipeline {
 
         stage("Deploy to QA") {
             steps {
-                echo "deploy to qa"
+                echo "Deploying to QA environment..."
             }
         }
 
         stage('Regression Automation Test') {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                   git branch: 'naveenjenkinsscript', url: 'https://github.com/TarakaPhaneendra/Jenkinsscript1.git'
+                    git branch: 'naveenjenkinsscript', url: 'https://github.com/TarakaPhaneendra/Jenkinsscript1.git'
                     bat "mvn clean test -Dsurefire.suiteXmlFiles=src/test/java/testrunners/testng_regressions.xml"
                 }
             }
@@ -41,8 +42,7 @@ pipeline {
                              keepAll: true,
                              reportDir: 'build',
                              reportFiles: 'TestExecutionReport.html',
-                             reportName: 'HTML Extent Report',
-                             reportTitles: ''])
+                             reportName: 'HTML Extent Report'])
             }
         }
     }
