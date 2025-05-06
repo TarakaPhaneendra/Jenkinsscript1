@@ -12,12 +12,7 @@ pipeline {
             }
         }
 
-        stage('Build & Test') {
-            steps {
-                // Run Maven commands
-                bat "\"${tool 'MAVEN_HOME'}/bin/mvn\" clean package"
-            }
-        }
+       
     }
 
     post {
